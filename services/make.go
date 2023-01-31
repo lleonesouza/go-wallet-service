@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"q2bank/prisma/db"
 )
 
@@ -17,15 +16,8 @@ func MakeServices() *Services {
 	err := client.Prisma.Connect()
 
 	if err != nil {
-		fmt.Errorf("%v", err.Error())
 		panic(err)
 	}
-
-	// defer func() {
-	// 	if err := client.Prisma.Disconnect(); err != nil {
-	// 		panic(err)
-	// 	}
-	// }()
 
 	ctx := context.Background()
 
