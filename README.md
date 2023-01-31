@@ -8,10 +8,11 @@
 6. Up Migrations ```prisma migrate dev```
 
 
-### Bussiness Logic
+### Business Logic
 
-- A Wallet with 50 coins are created for every *User* and *Shopkeeper*
-- User can send and receive coins
+- Every user has ONE Wallet
+- Every Wallet start with 50 coins
+- User can send/receive coins
 - Shopkeeper can only receive coins
 
 ### Auth
