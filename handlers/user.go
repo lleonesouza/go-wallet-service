@@ -62,14 +62,18 @@ func (u *UserHandler) Update(c echo.Context) error {
 	}
 
 	user, err := u.service.User.Update(claims.ID, _user)
-
-	filteredUser := u.service.User.Filter(user)
-
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, services.FormatError(err))
 	}
 
-	return c.JSON(http.StatusOK, filteredUser)
+	m := make(map[string]string)
+	m["name"] = user.Name
+	m["lastname"] = user.Lastname
+	m["id"] = user.ID
+	m["create_at"] = user.CreatedAt.String()
+	m["update_at"] = user.UpdatedAt.String()
+
+	return c.JSON(http.StatusOK, m)
 }
 
 func (u *UserHandler) Login(c echo.Context) error {
