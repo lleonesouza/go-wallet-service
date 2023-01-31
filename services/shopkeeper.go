@@ -56,7 +56,8 @@ func (s *Shopkeeper) Create(_shopkeeper *dtos.CreateShopkeeperDTO) (*db.Shopkeep
 		db.Shopkeeper.Wallet.Link(
 			db.Wallet.ID.Equals(wallet.ID),
 		),
-	).Exec(s.ctx)
+	).With(db.Shopkeeper.Wallet.Fetch()).Exec(s.ctx)
+
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +141,7 @@ func (s *Shopkeeper) validate(shopkeeper *dtos.CreateShopkeeperDTO) error {
 }
 
 func (s *Shopkeeper) emailExists(email string) error {
-	_, err := s.client.User.FindUnique(db.User.Email.Equals(email)).Exec(s.ctx)
+	_, err := s.client.Shopkeeper.FindUnique(db.Shopkeeper.Email.Equals(email)).Exec(s.ctx)
 	if err == nil {
 		return errors.New("The field 'Email' is already in use. Please use another email.")
 	}

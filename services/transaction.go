@@ -17,8 +17,12 @@ func (tx *Transaction) List(user_id string) ([]db.TransactionsModel, error) {
 	user, err := tx.client.User.FindUnique(
 		db.User.ID.Equals(user_id),
 	).With(db.User.Wallet.Fetch().With(
-		db.Wallet.Transactions.Fetch(),
+		db.Wallet.Transactions.Fetch().With(db.Transactions.Wallets.Fetch()),
 	)).Exec(tx.ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	transactions := user.Wallet().Transactions()
 
