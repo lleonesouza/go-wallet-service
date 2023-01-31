@@ -5,7 +5,7 @@ type CreateShopkeeperDTO struct {
 	Lastname string `json:"lastname" validate:"required"`
 	CNPJ     string `json:"cnpj" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
 
 type LoginShopkeeperDTO struct {
