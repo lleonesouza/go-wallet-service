@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator db {
+  provider = "go run github.com/prisma/prisma-client-go"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  cpf        String   @unique
+  password   String
+  name       String
+  lastname   String
+  Wallet     Wallet   @relation(fields: [walletId], references: [id])
+  walletId   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Shopkeeper {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  cnpj       String   @unique
+  password   String
+  name       String
+  lastname   String
+  Wallet     Wallet   @relation(fields: [walletId], references: [id])
+  walletId   String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Wallet {
+  id           String         @id @default(uuid())
+  address      String         @unique
+  balance      Int
+  User         User[]
+  Shopkeeper   Shopkeeper[]
+  Transactions Transactions[]
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now()) @updatedAt
+}
+
+model Transactions {
+  id         String   @id @default(uuid())
+  value      Int
+  Wallets    Wallet[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
