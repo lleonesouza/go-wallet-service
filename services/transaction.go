@@ -2,11 +2,18 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
 )
+
+type VerifyTransaction struct {
+	Authorization bool `json:"authorization"`
+}
 
 type Transaction struct {
 	client *db.PrismaClient
@@ -93,6 +100,22 @@ func (tx *Transaction) getWallet(email string) (*db.WalletModel, error) {
 	return nil, fmt.Errorf("Transaction not completed, receiver '%s' not found", email)
 }
 
+func (tx *Transaction) validTransaction() (*VerifyTransaction, error) {
+	resp, err := http.Get("https://run.mocky.io/v3/d02168c6-d88d-4ff2-aac6-9e9eb3425e31")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	data := &VerifyTransaction{}
+	json.Unmarshal(body, &data)
+
+	return data, nil
+}
+
 func (tx *Transaction) isNormalUser(userType string) error {
 	if userType != "user" {
 		return errors.New("Only normal users can make transactions")
@@ -137,6 +160,15 @@ func (tx *Transaction) CreateTransaction(
 	toWallet, err := tx.getWallet(_tx.To)
 	if err != nil {
 		return nil, err
+	}
+
+	validTx, err := tx.validTransaction()
+	if err != nil {
+		return nil, err
+	}
+
+	if !validTx.Authorization {
+		return nil, errors.New("Transaction is not authorized")
 	}
 
 	transaction := tx.client.Transactions.CreateOne(
