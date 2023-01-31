@@ -11,10 +11,7 @@ type Wallet struct {
 }
 
 func (w *Wallet) Create() (*db.WalletModel, error) {
-	address := GenerateAddress()
-
 	wallet, err := w.client.Wallet.CreateOne(
-		db.Wallet.Address.Set(address),
 		db.Wallet.Balance.Set(50),
 	).Exec(w.ctx)
 
