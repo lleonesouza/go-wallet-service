@@ -15,6 +15,15 @@ type UserHandler struct {
 	env     *config.Envs
 }
 
+//	@Description	Get account information.
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	dtos.UserResponseDTO
+//	@Failure		401	{object}	dtos.UnauthorizedError
+//	@Failure		500	{object}	dtos.GeneralError
+//	@Security		ApiKeyAuth
+//	@Router			/user [get]
 func (u *UserHandler) Get(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*config.JwtCustomClaims)
@@ -30,6 +39,15 @@ func (u *UserHandler) Get(c echo.Context) error {
 	return c.JSON(http.StatusOK, filteredUser)
 }
 
+//	@Description	Create a User account.
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			body	body		dtos.CreateUserDTO	true	"Create User Account Input"
+//	@Success		201		{object}	dtos.UserResponseDTO
+//	@Failure		400		{object}	dtos.GeneralError
+//	@Failure		500		{object}	dtos.GeneralError
+//	@Router			/user [post]
 func (u *UserHandler) Create(c echo.Context) error {
 	_user := new(dtos.CreateUserDTO)
 	if err := c.Bind(_user); err != nil {
@@ -47,6 +65,16 @@ func (u *UserHandler) Create(c echo.Context) error {
 	return c.JSON(http.StatusCreated, filteredUser)
 }
 
+//	@Description	Update 'Name' and/or 'Lastname' of User account.
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			body	body		dtos.UpdateUserDTO	true	"User"
+//	@Success		200		{object}	dtos.UserResponseDTO
+//	@Failure		401		{object}	dtos.UnauthorizedError
+//	@Failure		400		{object}	dtos.GeneralError
+//	@Security		ApiKeyAuth
+//	@Router			/user [put]
 func (u *UserHandler) Update(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*config.JwtCustomClaims)
@@ -71,6 +99,14 @@ func (u *UserHandler) Update(c echo.Context) error {
 	return c.JSON(http.StatusOK, m)
 }
 
+//	@Description	Login
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			body	body		dtos.LoginUserDTO	true	"User"
+//	@Success		200		{object}	dtos.LoginResponseDTO
+//	@Failure		400		{object}	dtos.GeneralError
+//	@Router			/user/login [post]
 func (u *UserHandler) Login(c echo.Context) error {
 	user := new(dtos.LoginUserDTO)
 	if err := c.Bind(user); err != nil {
