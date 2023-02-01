@@ -20,8 +20,8 @@ type ShopkeeperHandler struct {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	dtos.ShopkeeperResponseDTO
-//	@Failure		401	{object}	error.Unauthorized
-//	@Failure		500	{object}	error.General
+//	@Failure		401	{object}	dtos.UnauthorizedError
+//	@Failure		500	{object}	dtos.GeneralError
 //	@Security		ApiKeyAuth
 //	@Router			/shopkeeper [get]
 func (s *ShopkeeperHandler) Get(c echo.Context) error {
@@ -44,8 +44,8 @@ func (s *ShopkeeperHandler) Get(c echo.Context) error {
 //	@Produce		json
 //	@Param			body	body		dtos.CreateShopkeeperDTO	true	"Create Shopkeeper Account Input"
 //	@Success		201		{object}	dtos.ShopkeeperResponseDTO
-//	@Failure		400		{object}	error.General
-//	@Failure		500		{object}	error.General
+//	@Failure		400		{object}	dtos.GeneralError
+//	@Failure		500		{object}	dtos.GeneralError
 //	@Router			/shopkeeper [post]
 func (s *ShopkeeperHandler) Create(c echo.Context) error {
 	_shopkeeper := new(dtos.CreateShopkeeperDTO)
@@ -60,7 +60,7 @@ func (s *ShopkeeperHandler) Create(c echo.Context) error {
 
 	filteredShopkeeper := s.service.Shopkeeper.Filter(shopkeeper)
 
-	return c.JSON(http.StatusOK, filteredShopkeeper)
+	return c.JSON(http.StatusCreated, filteredShopkeeper)
 }
 
 //	@Description	Update 'Name' and/or 'Lastname' of Shopkeeper account.
@@ -69,8 +69,8 @@ func (s *ShopkeeperHandler) Create(c echo.Context) error {
 //	@Produce		json
 //	@Param			body	body		dtos.UpdateShopkeeperDTO	true	"Shopkeeper"
 //	@Success		200		{object}	dtos.ShopkeeperResponseDTO
-//	@Failure		401		{object}	error.Unauthorized
-//	@Failure		400		{object}	error.General
+//	@Failure		401		{object}	dtos.UnauthorizedError
+//	@Failure		400		{object}	dtos.GeneralError
 //	@Security		ApiKeyAuth
 //	@Router			/shopkeeper [put]
 func (s *ShopkeeperHandler) Update(c echo.Context) error {
@@ -103,8 +103,8 @@ func (s *ShopkeeperHandler) Update(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			body	body		dtos.LoginShopkeeperDTO	true	"Shopkeeper"
-//	@Success		200		{object}	dtos.ShopkeeperResponseDTO
-//	@Failure		400		{object}	error.General
+//	@Success		200		{object}	dtos.LoginResponseDTO
+//	@Failure		400		{object}	dtos.GeneralError
 //	@Router			/shopkeeper/login [post]
 func (s *ShopkeeperHandler) Login(c echo.Context) error {
 	shopkeeper := new(dtos.LoginShopkeeperDTO)

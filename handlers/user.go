@@ -44,7 +44,7 @@ func (u *UserHandler) Create(c echo.Context) error {
 
 	filteredUser := u.service.User.Filter(user)
 
-	return c.JSON(http.StatusOK, filteredUser)
+	return c.JSON(http.StatusCreated, filteredUser)
 }
 
 func (u *UserHandler) Update(c echo.Context) error {
