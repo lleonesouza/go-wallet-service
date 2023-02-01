@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"q2bank/config"
 	"q2bank/handlers"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -39,7 +40,7 @@ func main() {
 	// Configure middleware with the custom claims type
 	config := echojwt.Config{
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return new(handlers.JwtCustomClaims)
+			return new(config.JwtCustomClaims)
 		},
 		SigningKey: []byte(os.Getenv("SECRET")),
 	}

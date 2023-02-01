@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
 	"time"
@@ -112,11 +113,11 @@ func (u *User) Login(email string, password string) (string, error) {
 		return "", errors.New("Email or Password incorrect")
 	}
 
-	claims := &JwtCustomClaims{
-		user.Email,
-		user.ID,
-		"user",
-		jwt.RegisteredClaims{
+	claims := &config.JwtCustomClaims{
+		Email: user.Email,
+		ID:    user.ID,
+		Type:  "user",
+		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 		},
 	}

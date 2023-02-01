@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/services"
 
@@ -15,7 +16,7 @@ type TransactionHandler struct {
 
 func (tx *TransactionHandler) Create(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*JwtCustomClaims)
+	claims := token.Claims.(*config.JwtCustomClaims)
 
 	txInput := new(dtos.CreateTransactionDTO)
 	if err := c.Bind(txInput); err != nil {
@@ -33,7 +34,7 @@ func (tx *TransactionHandler) Create(c echo.Context) error {
 
 func (tx *TransactionHandler) List(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*JwtCustomClaims)
+	claims := token.Claims.(*config.JwtCustomClaims)
 
 	txOutputs, err := tx.service.Transaction.List(claims.ID)
 
