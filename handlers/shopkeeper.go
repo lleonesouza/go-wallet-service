@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/services"
 
@@ -11,6 +12,7 @@ import (
 
 type ShopkeeperHandler struct {
 	service *services.Services
+	env     *config.Envs
 }
 
 //	@Description	Get account information.
@@ -24,7 +26,7 @@ type ShopkeeperHandler struct {
 //	@Router			/shopkeeper [get]
 func (s *ShopkeeperHandler) Get(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*JwtCustomClaims)
+	claims := token.Claims.(*config.JwtCustomClaims)
 
 	shopkeeper, err := s.service.Shopkeeper.Get(claims.ID)
 	if err != nil {
@@ -73,7 +75,7 @@ func (s *ShopkeeperHandler) Create(c echo.Context) error {
 //	@Router			/shopkeeper [put]
 func (s *ShopkeeperHandler) Update(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*JwtCustomClaims)
+	claims := token.Claims.(*config.JwtCustomClaims)
 
 	_shopkeeper := new(dtos.UpdateShopkeeperDTO)
 	if err := c.Bind(_shopkeeper); err != nil {

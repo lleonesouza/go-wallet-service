@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
 	"time"
@@ -12,17 +13,11 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-type JwtCustomClaims struct {
-	Email string `json:"email"`
-	ID    string `json:"id"`
-	Type  string `json:"type"`
-	jwt.RegisteredClaims
-}
-
 type User struct {
 	client *db.PrismaClient
 	wallet *Wallet
 	ctx    context.Context
+	env    *config.Envs
 }
 
 func (u *User) Filter(user *db.UserModel) *dtos.UserResponseDTO {
@@ -112,11 +107,11 @@ func (u *User) Login(email string, password string) (string, error) {
 		return "", errors.New("Email or Password incorrect")
 	}
 
-	claims := &JwtCustomClaims{
-		user.Email,
-		user.ID,
-		"user",
-		jwt.RegisteredClaims{
+	claims := &config.JwtCustomClaims{
+		Email: user.Email,
+		ID:    user.ID,
+		Type:  u.env.USER_TYPE,
+		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 		},
 	}

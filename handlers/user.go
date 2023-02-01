@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/services"
 
@@ -11,18 +12,12 @@ import (
 
 type UserHandler struct {
 	service *services.Services
-}
-
-type JwtCustomClaims struct {
-	Email string `json:"email"`
-	ID    string `json:"id"`
-	Type  string `json:"type"`
-	jwt.RegisteredClaims
+	env     *config.Envs
 }
 
 func (u *UserHandler) Get(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*JwtCustomClaims)
+	claims := token.Claims.(*config.JwtCustomClaims)
 
 	user, err := u.service.User.Get(claims.ID)
 
@@ -54,7 +49,7 @@ func (u *UserHandler) Create(c echo.Context) error {
 
 func (u *UserHandler) Update(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*JwtCustomClaims)
+	claims := token.Claims.(*config.JwtCustomClaims)
 
 	_user := new(dtos.UpdateUserDTO)
 	if err := c.Bind(_user); err != nil {
