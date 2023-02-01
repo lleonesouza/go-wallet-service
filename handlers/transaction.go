@@ -22,6 +22,7 @@ type TransactionHandler struct {
 //	@Param			body	body		dtos.CreateTransactionDTO	true	"Create Transaction Input"
 //	@Success		201		{object}	dtos.ResponseTransactionDTO
 //	@Failure		400		{object}	dtos.GeneralError
+//	@Security		ApiKeyAuth
 //	@Router			/transaction [post]
 func (tx *TransactionHandler) Create(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
