@@ -15,6 +15,14 @@ type TransactionHandler struct {
 	env     *config.Envs
 }
 
+//	@Description	Create a transaction.
+//	@Tags			transaction
+//	@Accept			json
+//	@Produce		json
+//	@Param			body	body		dtos.CreateTransactionDTO	true	"Create Transaction Input"
+//	@Success		201		{object}	dtos.ResponseTransactionDTO
+//	@Failure		400		{object}	dtos.GeneralError
+//	@Router			/transaction [post]
 func (tx *TransactionHandler) Create(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*config.JwtCustomClaims)
@@ -33,6 +41,14 @@ func (tx *TransactionHandler) Create(c echo.Context) error {
 	return c.JSON(http.StatusCreated, txOutput)
 }
 
+//	@Description	Get transaction from Wallet.
+//	@Tags			transaction
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	dtos.ResponseTransactionDTO
+//	@Failure		401	{object}	dtos.UnauthorizedError
+//	@Security		ApiKeyAuth
+//	@Router			/transaction [get]
 func (tx *TransactionHandler) List(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*config.JwtCustomClaims)

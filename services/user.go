@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"errors"
-	"os"
 	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
@@ -118,7 +117,7 @@ func (u *User) Login(email string, password string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	t, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	t, err := token.SignedString([]byte(u.env.JWT_SECRET))
 
 	return t, nil
 }
