@@ -13,17 +13,11 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-type JwtCustomClaims struct {
-	Email string `json:"email"`
-	ID    string `json:"id"`
-	Type  string `json:"type"`
-	jwt.RegisteredClaims
-}
-
 type User struct {
 	client *db.PrismaClient
 	wallet *Wallet
 	ctx    context.Context
+	env    *config.Envs
 }
 
 func (u *User) Filter(user *db.UserModel) *dtos.UserResponseDTO {
@@ -116,7 +110,7 @@ func (u *User) Login(email string, password string) (string, error) {
 	claims := &config.JwtCustomClaims{
 		Email: user.Email,
 		ID:    user.ID,
-		Type:  "user",
+		Type:  u.env.USER_TYPE,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 		},

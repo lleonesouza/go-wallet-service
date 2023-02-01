@@ -17,6 +17,7 @@ type Shopkeeper struct {
 	client *db.PrismaClient
 	wallet *Wallet
 	ctx    context.Context
+	env    *config.Envs
 }
 
 func (s *Shopkeeper) Filter(shopkeeper *db.ShopkeeperModel) *dtos.ShopkeeperResponseDTO {
@@ -108,7 +109,7 @@ func (s *Shopkeeper) Login(email string, password string) (string, error) {
 	claims := &config.JwtCustomClaims{
 		Email: shopkeeper.Email,
 		ID:    shopkeeper.ID,
-		Type:  "shopkeeper",
+		Type:  s.env.SHOPKEEPER_TYPE,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 		},

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
 )
@@ -18,6 +19,7 @@ type VerifyTransaction struct {
 type Transaction struct {
 	client *db.PrismaClient
 	ctx    context.Context
+	env    *config.Envs
 }
 
 func (tx *Transaction) List(user_id string) ([]db.TransactionsModel, error) {
@@ -117,7 +119,7 @@ func (tx *Transaction) validTransaction() (*VerifyTransaction, error) {
 }
 
 func (tx *Transaction) isNormalUser(userType string) error {
-	if userType != "user" {
+	if userType != tx.env.USER_TYPE {
 		return errors.New("Only normal users can make transactions")
 	}
 	return nil

@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"q2bank/config"
 	"q2bank/prisma/db"
 )
 
@@ -11,7 +12,7 @@ type Services struct {
 	Transaction *Transaction
 }
 
-func MakeServices() *Services {
+func MakeServices(env *config.Envs) *Services {
 	client := db.NewClient()
 	err := client.Prisma.Connect()
 
@@ -21,22 +22,25 @@ func MakeServices() *Services {
 
 	ctx := context.Background()
 
-	wallet := &Wallet{client, ctx}
+	wallet := &Wallet{client, ctx, env}
 
 	return &Services{
 		User: &User{
 			client: client,
 			wallet: wallet,
 			ctx:    ctx,
+			env:    env,
 		},
 		Shopkeeper: &Shopkeeper{
 			client: client,
 			wallet: wallet,
 			ctx:    ctx,
+			env:    env,
 		},
 		Transaction: &Transaction{
 			client: client,
 			ctx:    ctx,
+			env:    env,
 		},
 	}
 }
