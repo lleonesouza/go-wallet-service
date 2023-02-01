@@ -51,6 +51,16 @@ Response:
 
 Now the *token* can be used as *Bearer Token* to make request to protected routes, the same logic works for Shopkeeper.
 
+# Swagger
+
+To generate swagger docs files, use
+
+```
+go run github.com/swaggo/swag/cmd/swag init -g main.go --output docs
+```
+
+then use /swagger/ to access
+
 # API Routes
 
 ## User:
@@ -76,6 +86,11 @@ Now the *token* can be used as *Bearer Token* to make request to protected route
 | POST | /transaction  | Creates a transaction | 
 | GET | /transaction | List trasactions from Wallet | 
 
+## Swagger:
+| TYPE  | URL | DESCRIPTION | 
+| - | - | - |
+| POST | /swagger/  | Render swagger API docs | 
+
 
 ## Folders Structure
 ### Prisma
@@ -87,3 +102,9 @@ Contains Echo HTTP handlers functions and DTOs (Data Transfer Objects), responsi
 ### Services
 Contains the bussiness logic functions that are injected in Handlers
 
+### Config
+Contains env and configuration structs 
+
+# Contribute
+
+Feel free to create a Pull Request, it will be welcome
