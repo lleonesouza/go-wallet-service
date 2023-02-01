@@ -12,6 +12,7 @@ import (
 
 type TransactionHandler struct {
 	service *services.Services
+	env     *config.Envs
 }
 
 func (tx *TransactionHandler) Create(c echo.Context) error {

@@ -12,6 +12,7 @@ import (
 
 type ShopkeeperHandler struct {
 	service *services.Services
+	env     *config.Envs
 }
 
 //	@Description	Get account information.

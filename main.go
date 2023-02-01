@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"q2bank/config"
 	"q2bank/handlers"
 
@@ -35,14 +34,14 @@ import (
 
 func main() {
 	e := echo.New()
-	h := handlers.MakeHandlers()
+	envs := config.MakeEnvs()
+	h := handlers.MakeHandlers(envs)
 
-	// Configure middleware with the custom claims type
 	config := echojwt.Config{
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
 			return new(config.JwtCustomClaims)
 		},
-		SigningKey: []byte(os.Getenv("SECRET")),
+		SigningKey: []byte(envs.JWT_SECRET),
 	}
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)

@@ -12,6 +12,7 @@ import (
 
 type UserHandler struct {
 	service *services.Services
+	env     *config.Envs
 }
 
 func (u *UserHandler) Get(c echo.Context) error {
