@@ -30,7 +30,7 @@ func (tx *TransactionHandler) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, services.FormatError(err))
 	}
 
-	return c.JSON(http.StatusOK, txOutput)
+	return c.JSON(http.StatusCreated, txOutput)
 }
 
 func (tx *TransactionHandler) List(c echo.Context) error {

@@ -33,6 +33,6 @@ type UserResponseDTO struct {
 	UpdateAt string `json:"update_at"`
 }
 
-type BalanceDTO struct {
-	Balance int `json:"balance"`
+type LoginResponseDTO struct {
+	Token int `json:"token"`
 }
