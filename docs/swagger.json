@@ -1,0 +1,728 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Q2BANK Challenge",
+        "title": "Q2Bank API",
+        "contact": {
+            "name": "leone de souza",
+            "url": "https://github.com/lleonesouza",
+            "email": "lleonesouza@live.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:1323",
+    "basePath": "/",
+    "paths": {
+        "/shopkeeper": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get account information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shopkeeper"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ShopkeeperResponseDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UnauthorizedError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update 'Name' and/or 'Lastname' of Shopkeeper account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shopkeeper"
+                ],
+                "parameters": [
+                    {
+                        "description": "Shopkeeper",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateShopkeeperDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ShopkeeperResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UnauthorizedError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a Shopkeeper account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shopkeeper"
+                ],
+                "parameters": [
+                    {
+                        "description": "Create Shopkeeper Account Input",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateShopkeeperDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ShopkeeperResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            }
+        },
+        "/shopkeeper/login": {
+            "post": {
+                "description": "Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shopkeeper"
+                ],
+                "parameters": [
+                    {
+                        "description": "Shopkeeper",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.LoginShopkeeperDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.LoginResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get transaction from Wallet.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transaction"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ResponseTransactionDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UnauthorizedError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a transaction.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transaction"
+                ],
+                "parameters": [
+                    {
+                        "description": "Create Transaction Input",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateTransactionDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ResponseTransactionDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get account information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserResponseDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UnauthorizedError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update 'Name' and/or 'Lastname' of User account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UnauthorizedError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a User account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "Create User Account Input",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.LoginUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.LoginResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GeneralError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dtos.CreateShopkeeperDTO": {
+            "type": "object",
+            "required": [
+                "cnpj",
+                "email",
+                "lastname",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "cnpj": {
+                    "type": "string",
+                    "example": "12345678"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "doe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "john"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "12345678"
+                }
+            }
+        },
+        "dtos.CreateTransactionDTO": {
+            "type": "object",
+            "required": [
+                "to",
+                "value"
+            ],
+            "properties": {
+                "to": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "value": {
+                    "type": "integer",
+                    "example": 20
+                }
+            }
+        },
+        "dtos.CreateUserDTO": {
+            "type": "object",
+            "required": [
+                "cpf",
+                "email",
+                "lastname",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "cpf": {
+                    "type": "string",
+                    "example": "12345678"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "doe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "john"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "12345678"
+                }
+            }
+        },
+        "dtos.GeneralError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "something goes wrong"
+                }
+            }
+        },
+        "dtos.LoginResponseDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5AZG9lLmNvbSIsImlkIjoiMWE4MjQwM2YtYWNhOS00YjA1LTliNTEtYjRmZWE4OGM2MWQ5IiwidHlwZSI6InNob3BrZWVwZXIiLCJleHAiOjE2NzU1NDkyODd9.MSgwyCzvbC6tfH7ZYNrEhhv_XbmKqVEX-rEe6Y7EMKI"
+                }
+            }
+        },
+        "dtos.LoginShopkeeperDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "12345678"
+                }
+            }
+        },
+        "dtos.LoginUserDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "12345678"
+                }
+            }
+        },
+        "dtos.ResponseTransactionDTO": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string",
+                    "example": "2023-01-31 12:47:27.072 +0000 UTC"
+                },
+                "from_user_id": {
+                    "type": "string",
+                    "example": "06901d3b-134b-4ea6-ba0f-3a00ca5836b7"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "06901d3b-134b-4ea6-ba0f-3a00ca5836b7"
+                },
+                "to_user_id": {
+                    "type": "string",
+                    "example": "06901d3b-134b-4ea6-ba0f-3a00ca5836b7"
+                },
+                "update_at": {
+                    "type": "string",
+                    "example": "2023-01-31 12:47:27.072 +0000 UTC"
+                },
+                "value": {
+                    "type": "integer",
+                    "example": 50
+                }
+            }
+        },
+        "dtos.ShopkeeperResponseDTO": {
+            "description": "Shopkeeper account information",
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "cnpj": {
+                    "type": "string",
+                    "example": "12345789"
+                },
+                "create_at": {
+                    "type": "string",
+                    "example": "2023-01-31 12:47:27.072 +0000 UTC"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "jhon@doe.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "06901d3b-134b-4ea6-ba0f-3a00ca5836b7"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "doe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "john"
+                },
+                "update_at": {
+                    "type": "string",
+                    "example": "2023-01-31 12:47:27.072 +0000 UTC"
+                }
+            }
+        },
+        "dtos.UnauthorizedError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "missing or malformed jwt"
+                }
+            }
+        },
+        "dtos.UpdateShopkeeperDTO": {
+            "type": "object",
+            "required": [
+                "lastname",
+                "name"
+            ],
+            "properties": {
+                "lastname": {
+                    "type": "string",
+                    "example": "doe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "john"
+                }
+            }
+        },
+        "dtos.UpdateUserDTO": {
+            "type": "object",
+            "required": [
+                "lastname",
+                "name"
+            ],
+            "properties": {
+                "lastname": {
+                    "type": "string",
+                    "example": "doe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "john"
+                }
+            }
+        },
+        "dtos.UserResponseDTO": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "cpf": {
+                    "type": "string",
+                    "example": "12345678"
+                },
+                "create_at": {
+                    "type": "string",
+                    "example": "2023-01-31 12:47:27.072 +0000 UTC"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "06901d3b-134b-4ea6-ba0f-3a00ca5836b7"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "doe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "john"
+                },
+                "update_at": {
+                    "type": "string",
+                    "example": "2023-01-31 12:47:27.072 +0000 UTC"
+                },
+                "wallet_id": {
+                    "type": "string",
+                    "example": "06901d3b-134b-4ea6-ba0f-3a00ca5836b7"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Token used authenticate 'User' and 'Shopkeeper'",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
