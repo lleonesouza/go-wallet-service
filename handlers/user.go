@@ -89,14 +89,9 @@ func (u *UserHandler) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, services.FormatError(err))
 	}
 
-	m := make(map[string]string)
-	m["name"] = user.Name
-	m["lastname"] = user.Lastname
-	m["id"] = user.ID
-	m["create_at"] = user.CreatedAt.String()
-	m["update_at"] = user.UpdatedAt.String()
+	filteredUser := u.service.User.Filter(user)
 
-	return c.JSON(http.StatusOK, m)
+	return c.JSON(http.StatusOK, filteredUser)
 }
 
 //	@Description	Login
