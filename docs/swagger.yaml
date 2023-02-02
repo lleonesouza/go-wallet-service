@@ -1,0 +1,487 @@
+basePath: /
+definitions:
+  dtos.CreateShopkeeperDTO:
+    properties:
+      cnpj:
+        example: "12345678"
+        type: string
+      email:
+        example: john@doe.com
+        type: string
+      lastname:
+        example: doe
+        type: string
+      name:
+        example: john
+        type: string
+      password:
+        example: "12345678"
+        type: string
+    required:
+    - cnpj
+    - email
+    - lastname
+    - name
+    - password
+    type: object
+  dtos.CreateTransactionDTO:
+    properties:
+      to:
+        example: john@doe.com
+        type: string
+      value:
+        example: 20
+        type: integer
+    required:
+    - to
+    - value
+    type: object
+  dtos.CreateUserDTO:
+    properties:
+      cpf:
+        example: "12345678"
+        type: string
+      email:
+        example: john@doe.com
+        type: string
+      lastname:
+        example: doe
+        type: string
+      name:
+        example: john
+        type: string
+      password:
+        example: "12345678"
+        type: string
+    required:
+    - cpf
+    - email
+    - lastname
+    - name
+    - password
+    type: object
+  dtos.GeneralError:
+    properties:
+      error:
+        example: something goes wrong
+        type: string
+    type: object
+  dtos.LoginResponseDTO:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5AZG9lLmNvbSIsImlkIjoiMWE4MjQwM2YtYWNhOS00YjA1LTliNTEtYjRmZWE4OGM2MWQ5IiwidHlwZSI6InNob3BrZWVwZXIiLCJleHAiOjE2NzU1NDkyODd9.MSgwyCzvbC6tfH7ZYNrEhhv_XbmKqVEX-rEe6Y7EMKI
+        type: string
+    type: object
+  dtos.LoginShopkeeperDTO:
+    properties:
+      email:
+        example: john@doe.com
+        type: string
+      password:
+        example: "12345678"
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dtos.LoginUserDTO:
+    properties:
+      email:
+        example: john@doe.com
+        type: string
+      password:
+        example: "12345678"
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dtos.ResponseTransactionDTO:
+    properties:
+      create_at:
+        example: 2023-01-31 12:47:27.072 +0000 UTC
+        type: string
+      from_user_id:
+        example: 06901d3b-134b-4ea6-ba0f-3a00ca5836b7
+        type: string
+      id:
+        example: 06901d3b-134b-4ea6-ba0f-3a00ca5836b7
+        type: string
+      to_user_id:
+        example: 06901d3b-134b-4ea6-ba0f-3a00ca5836b7
+        type: string
+      update_at:
+        example: 2023-01-31 12:47:27.072 +0000 UTC
+        type: string
+      value:
+        example: 50
+        type: integer
+    type: object
+  dtos.ShopkeeperResponseDTO:
+    description: Shopkeeper account information
+    properties:
+      balance:
+        example: 50
+        type: integer
+      cnpj:
+        example: "12345789"
+        type: string
+      create_at:
+        example: 2023-01-31 12:47:27.072 +0000 UTC
+        type: string
+      email:
+        example: jhon@doe.com
+        type: string
+      id:
+        example: 06901d3b-134b-4ea6-ba0f-3a00ca5836b7
+        type: string
+      lastname:
+        example: doe
+        type: string
+      name:
+        example: john
+        type: string
+      update_at:
+        example: 2023-01-31 12:47:27.072 +0000 UTC
+        type: string
+    type: object
+  dtos.UnauthorizedError:
+    properties:
+      error:
+        example: missing or malformed jwt
+        type: string
+    type: object
+  dtos.UpdateShopkeeperDTO:
+    properties:
+      lastname:
+        example: doe
+        type: string
+      name:
+        example: john
+        type: string
+    required:
+    - lastname
+    - name
+    type: object
+  dtos.UpdateUserDTO:
+    properties:
+      lastname:
+        example: doe
+        type: string
+      name:
+        example: john
+        type: string
+    required:
+    - lastname
+    - name
+    type: object
+  dtos.UserResponseDTO:
+    properties:
+      balance:
+        example: 50
+        type: integer
+      cpf:
+        example: "12345678"
+        type: string
+      create_at:
+        example: 2023-01-31 12:47:27.072 +0000 UTC
+        type: string
+      email:
+        example: john@doe.com
+        type: string
+      id:
+        example: 06901d3b-134b-4ea6-ba0f-3a00ca5836b7
+        type: string
+      lastname:
+        example: doe
+        type: string
+      name:
+        example: john
+        type: string
+      update_at:
+        example: 2023-01-31 12:47:27.072 +0000 UTC
+        type: string
+      wallet_id:
+        example: 06901d3b-134b-4ea6-ba0f-3a00ca5836b7
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact:
+    email: lleonesouza@live.com
+    name: leone de souza
+    url: https://github.com/lleonesouza
+  description: Q2BANK Challenge
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Q2Bank API
+  version: "1.0"
+paths:
+  /shopkeeper:
+    get:
+      consumes:
+      - application/json
+      description: Get account information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ShopkeeperResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.UnauthorizedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - shopkeeper
+    post:
+      consumes:
+      - application/json
+      description: Create a Shopkeeper account.
+      parameters:
+      - description: Create Shopkeeper Account Input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateShopkeeperDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.ShopkeeperResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      tags:
+      - shopkeeper
+    put:
+      consumes:
+      - application/json
+      description: Update 'Name' and/or 'Lastname' of Shopkeeper account.
+      parameters:
+      - description: Shopkeeper
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateShopkeeperDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ShopkeeperResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.UnauthorizedError'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - shopkeeper
+  /shopkeeper/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Shopkeeper
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginShopkeeperDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.LoginResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      tags:
+      - shopkeeper
+  /transaction:
+    get:
+      consumes:
+      - application/json
+      description: Get transaction from Wallet.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ResponseTransactionDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.UnauthorizedError'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - transaction
+    post:
+      consumes:
+      - application/json
+      description: Create a transaction.
+      parameters:
+      - description: Create Transaction Input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateTransactionDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.ResponseTransactionDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - transaction
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get account information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.UnauthorizedError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Create a User account.
+      parameters:
+      - description: Create User Account Input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update 'Name' and/or 'Lastname' of User account.
+      parameters:
+      - description: User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.UnauthorizedError'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginUserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.LoginResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.GeneralError'
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    description: Token used authenticate 'User' and 'Shopkeeper'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
