@@ -70,7 +70,7 @@ func (u *User) Create(_user *dtos.CreateUserDTO) (*db.UserModel, error) {
 func (u *User) Update(id string, _user *dtos.UpdateUserDTO) (*db.UserModel, error) {
 	user, err := u.client.User.FindUnique(
 		db.User.ID.Equals(id),
-	).Update(
+	).With(db.User.Wallet.Fetch()).Update(
 		db.User.Name.Set(_user.Name),
 		db.User.Lastname.Set(_user.Lastname),
 	).Exec(u.ctx)

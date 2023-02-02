@@ -88,14 +88,9 @@ func (s *ShopkeeperHandler) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, services.FormatError(err))
 	}
 
-	m := make(map[string]string)
-	m["name"] = shopkeeper.Name
-	m["lastname"] = shopkeeper.Lastname
-	m["id"] = shopkeeper.ID
-	m["create_at"] = shopkeeper.CreatedAt.String()
-	m["update_at"] = shopkeeper.UpdatedAt.String()
+	filteredShopkeeper := s.service.Shopkeeper.Filter(shopkeeper)
 
-	return c.JSON(http.StatusOK, m)
+	return c.JSON(http.StatusOK, filteredShopkeeper)
 }
 
 //	@Description	Login

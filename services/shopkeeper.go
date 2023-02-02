@@ -69,7 +69,7 @@ func (s *Shopkeeper) Create(_shopkeeper *dtos.CreateShopkeeperDTO) (*db.Shopkeep
 func (s *Shopkeeper) Update(id string, _shopkeeper *dtos.UpdateShopkeeperDTO) (*db.ShopkeeperModel, error) {
 	shopkeeper, err := s.client.Shopkeeper.FindUnique(
 		db.Shopkeeper.ID.Equals(id),
-	).Update(
+	).With(db.Shopkeeper.Wallet.Fetch()).Update(
 		db.Shopkeeper.Name.Set(_shopkeeper.Name),
 		db.Shopkeeper.Lastname.Set(_shopkeeper.Lastname),
 	).Exec(s.ctx)
