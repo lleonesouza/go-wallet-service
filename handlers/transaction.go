@@ -3,16 +3,20 @@ package handlers
 import (
 	"net/http"
 	"q2bank/config"
+	"q2bank/errors"
 	"q2bank/handlers/dtos"
 	"q2bank/services"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type TransactionHandler struct {
-	service *services.Services
-	env     *config.Envs
+	service   *services.Services
+	env       *config.Envs
+	validator *validator.Validate
+	errors    *errors.Errors
 }
 
 //	@Description	Create a transaction.

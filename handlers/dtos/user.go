@@ -1,23 +1,22 @@
 package dtos
 
 // Inputs
-
 type CreateUserDTO struct {
-	Name     string `json:"name" validate:"required" example:"john"`
-	Lastname string `json:"lastname" validate:"required" example:"doe"`
-	CPF      string `json:"cpf" validate:"required" example:"12345678"`
+	Name     string `json:"name" validate:"required,min=3,max=15" example:"john"`
+	Lastname string `json:"lastname" validate:"required,min=3,max=19" example:"doe"`
 	Email    string `json:"email" validate:"required,email" example:"john@doe.com"`
-	Password string `json:"password" validate:"required" example:"12345678"`
+	Password string `json:"password" validate:"required,password" example:"12345678"`
+	CPF      string `json:"cpf" validate:"required,cpf" example:"12345678"`
 }
 
 type UpdateUserDTO struct {
-	Name     string `json:"name" validate:"required" example:"john"`
-	Lastname string `json:"lastname" validate:"required" example:"doe"`
+	Name     string `json:"name" validate:"required,min=3,max=15" example:"john"`
+	Lastname string `json:"lastname" validate:"required,min=3,max=19" example:"doe"`
 }
 
 type LoginUserDTO struct {
 	Email    string `json:"email" validate:"required,email" example:"john@doe.com"`
-	Password string `json:"password" validate:"required,email" example:"12345678"`
+	Password string `json:"password" validate:"required,password" example:"12345678"`
 }
 
 // Outputs
