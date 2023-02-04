@@ -10,6 +10,7 @@ type Services struct {
 	User        *User
 	Shopkeeper  *Shopkeeper
 	Transaction *Transaction
+	Wallet      *Wallet
 }
 
 func MakeServices(env *config.Envs) *Services {
@@ -42,5 +43,6 @@ func MakeServices(env *config.Envs) *Services {
 			ctx:    ctx,
 			env:    env,
 		},
+		Wallet: wallet,
 	}
 }
