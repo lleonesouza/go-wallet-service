@@ -14,6 +14,7 @@ type Errors struct {
 	CreateWalletError func(details string) *Error
 	CreateUserError   func(details string) *Error
 	UpdateUserError   func(details string) *Error
+	LoginError        func() *Error
 }
 
 type Error struct {
@@ -72,6 +73,13 @@ func MakeErrors() *Errors {
 				Title:   "unauthorized_error",
 				Details: "Please log-in with your account",
 				Status:  http.StatusUnauthorized,
+			}
+		},
+		LoginError: func() *Error {
+			return &Error{
+				Title:   "login_error",
+				Details: "Please try again",
+				Status:  http.StatusBadRequest,
 			}
 		},
 	}
