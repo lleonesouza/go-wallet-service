@@ -11,7 +11,7 @@
 ### Business Logic
 
 - Every user has ONE Wallet
-- Every Wallet start with 50 coins
+- Every Wallet start with *WALLET_BALANCE_INIT* (set environment) coins
 - User can send/receive coins
 - Shopkeeper can only receive coins
 
@@ -101,6 +101,9 @@ Contains Echo HTTP handlers functions and DTOs (Data Transfer Objects), responsi
 
 ### Services
 Contains the bussiness logic functions that are injected in Handlers
+
+### Errors
+Contains errors struct
 
 ### Config
 Contains env and configuration structs 
