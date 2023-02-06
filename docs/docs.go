@@ -507,10 +507,14 @@ const docTemplate = `{
                 },
                 "lastname": {
                     "type": "string",
+                    "maxLength": 19,
+                    "minLength": 3,
                     "example": "doe"
                 },
                 "name": {
                     "type": "string",
+                    "maxLength": 15,
+                    "minLength": 3,
                     "example": "john"
                 },
                 "password": {
@@ -673,10 +677,14 @@ const docTemplate = `{
             "properties": {
                 "lastname": {
                     "type": "string",
+                    "maxLength": 19,
+                    "minLength": 3,
                     "example": "doe"
                 },
                 "name": {
                     "type": "string",
+                    "maxLength": 15,
+                    "minLength": 3,
                     "example": "john"
                 }
             }
