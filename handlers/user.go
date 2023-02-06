@@ -3,16 +3,20 @@ package handlers
 import (
 	"net/http"
 	"q2bank/config"
+	"q2bank/errors"
 	"q2bank/handlers/dtos"
 	"q2bank/services"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type UserHandler struct {
-	service *services.Services
-	env     *config.Envs
+	service   *services.Services
+	env       *config.Envs
+	validator *validator.Validate
+	errors    *errors.Errors
 }
 
 //	@Description	Get account information.
@@ -28,15 +32,13 @@ func (u *UserHandler) Get(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*config.JwtCustomClaims)
 
-	user, err := u.service.User.Get(claims.ID)
-
-	filteredUser := u.service.User.Filter(user)
-
+	user, err := u.service.User.GetById(claims.ID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, services.FormatError(err))
+		unauthorizedError := u.errors.UnauthorizedError()
+		c.JSON(unauthorizedError.Status, unauthorizedError)
 	}
 
-	return c.JSON(http.StatusOK, filteredUser)
+	return c.JSON(http.StatusOK, u.service.User.Filter(user))
 }
 
 //	@Description	Create a User account.
@@ -49,20 +51,50 @@ func (u *UserHandler) Get(c echo.Context) error {
 //	@Failure		500		{object}	dtos.GeneralError
 //	@Router			/user [post]
 func (u *UserHandler) Create(c echo.Context) error {
-	_user := new(dtos.CreateUserDTO)
-	if err := c.Bind(_user); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, services.FormatError(err))
-	}
-
-	user, err := u.service.User.Create(_user)
-
+	// Bind User
+	user := new(dtos.CreateUserDTO)
+	err := c.Bind(user)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, services.FormatError(err))
+		typeError := u.errors.TypeError(err.Error())
+		return c.JSON(typeError.Status, typeError)
 	}
 
-	filteredUser := u.service.User.Filter(user)
+	// Validate body
+	err = u.validator.Struct(user)
+	if err != nil {
+		bodyErr := u.errors.BodyError(err.Error())
+		return c.JSON(bodyErr.Status, bodyErr)
+	}
 
-	return c.JSON(http.StatusCreated, filteredUser)
+	// Check if email exists
+	_, err = u.service.User.GetByEmail(user.Email)
+	if err == nil {
+		conflictErr := u.errors.EmailRegistered(user.Email)
+		return c.JSON(conflictErr.Status, conflictErr)
+	}
+
+	// Check if CPF exists
+	_, err = u.service.User.GetByCPF(user.CPF)
+	if err == nil {
+		conflictErr := u.errors.CpfRegistered(user.CPF)
+		return c.JSON(conflictErr.Status, conflictErr)
+	}
+
+	// Create Wallet
+	wallet, err := u.service.Wallet.Create()
+	if err != nil {
+		creationErr := u.errors.CreateWalletError(err.Error())
+		return c.JSON(creationErr.Status, creationErr)
+	}
+
+	// Create User
+	response, err := u.service.User.Create(user, wallet)
+	if err != nil {
+		creationErr := u.errors.CreateUserError(err.Error())
+		return c.JSON(creationErr.Status, creationErr)
+	}
+
+	return c.JSON(http.StatusCreated, u.service.User.Filter(response))
 }
 
 //	@Description	Update 'Name' and/or 'Lastname' of User account.
@@ -79,19 +111,29 @@ func (u *UserHandler) Update(c echo.Context) error {
 	token := c.Get("user").(*jwt.Token)
 	claims := token.Claims.(*config.JwtCustomClaims)
 
+	// Bind User
 	_user := new(dtos.UpdateUserDTO)
-	if err := c.Bind(_user); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, services.FormatError(err))
-	}
-
-	user, err := u.service.User.Update(claims.ID, _user)
+	err := c.Bind(_user)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, services.FormatError(err))
+		typeErr := u.errors.TypeError(err.Error())
+		return c.JSON(typeErr.Status, typeErr)
 	}
 
-	filteredUser := u.service.User.Filter(user)
+	// Validate Body
+	err = u.validator.Struct(_user)
+	if err != nil {
+		bodyErr := u.errors.BodyError(err.Error())
+		return c.JSON(bodyErr.Status, bodyErr)
+	}
 
-	return c.JSON(http.StatusOK, filteredUser)
+	// Update
+	response, err := u.service.User.Update(claims.ID, _user)
+	if err != nil {
+		bodyErr := u.errors.UpdateUserError(err.Error())
+		return c.JSON(bodyErr.Status, bodyErr)
+	}
+
+	return c.JSON(http.StatusOK, u.service.User.Filter(response))
 }
 
 //	@Description	Login
@@ -103,14 +145,40 @@ func (u *UserHandler) Update(c echo.Context) error {
 //	@Failure		400		{object}	dtos.GeneralError
 //	@Router			/user/login [post]
 func (u *UserHandler) Login(c echo.Context) error {
+	// Bind LoginUserDTO
 	user := new(dtos.LoginUserDTO)
-	if err := c.Bind(user); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, services.FormatError(err))
+	err := c.Bind(user)
+	if err != nil {
+		typeErr := u.errors.TypeError(err.Error())
+		return c.JSON(typeErr.Status, typeErr)
 	}
 
-	token, err := u.service.User.Login(user.Email, user.Password)
+	// Validate LoginUserDTO
+	err = u.validator.Struct(user)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, services.FormatError(err))
+		bodyErr := u.errors.BodyError(err.Error())
+		return c.JSON(bodyErr.Status, bodyErr)
+	}
+
+	// Get User By Email
+	completeUser, err := u.service.User.GetByEmail(user.Email)
+	if err != nil {
+		conflictErr := u.errors.EmailRegistered(user.Email)
+		return c.JSON(conflictErr.Status, conflictErr)
+	}
+
+	// Compare Password
+	err = u.service.User.CheckPasswordHash(completeUser.Password, user.Password)
+	if err != nil {
+		unauthorizedErr := u.errors.UnauthorizedError()
+		return c.JSON(unauthorizedErr.Status, unauthorizedErr)
+	}
+
+	// Login
+	token, err := u.service.User.Login(completeUser)
+	if err != nil {
+		loginErr := u.errors.LoginError()
+		return c.JSON(loginErr.Status, loginErr)
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{

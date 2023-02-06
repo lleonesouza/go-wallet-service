@@ -2,14 +2,13 @@ package services
 
 import (
 	"context"
-	"errors"
 	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"gopkg.in/go-playground/validator.v9"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Shopkeeper struct {
@@ -32,18 +31,8 @@ func (s *Shopkeeper) Filter(shopkeeper *db.ShopkeeperModel) *dtos.ShopkeeperResp
 	}
 }
 
-func (s *Shopkeeper) Create(_shopkeeper *dtos.CreateShopkeeperDTO) (*db.ShopkeeperModel, error) {
-	err := s.validate(_shopkeeper)
-	if err != nil {
-		return nil, err
-	}
-
+func (s *Shopkeeper) Create(_shopkeeper *dtos.CreateShopkeeperDTO, wallet *db.WalletModel) (*db.ShopkeeperModel, error) {
 	passwordHash, err := HashPassword(_shopkeeper.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	wallet, err := s.wallet.Create()
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +70,27 @@ func (s *Shopkeeper) Update(id string, _shopkeeper *dtos.UpdateShopkeeperDTO) (*
 	return shopkeeper, nil
 }
 
-func (s *Shopkeeper) Get(id string) (*db.ShopkeeperModel, error) {
+func (s *Shopkeeper) Login(shopkeeper *db.ShopkeeperModel) (*string, error) {
+	claims := &config.JwtCustomClaims{
+		Email: shopkeeper.Email,
+		ID:    shopkeeper.ID,
+		Type:  s.env.SHOPKEEPER_TYPE,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenStr, err := token.SignedString([]byte(s.env.JWT_SECRET))
+	if err != nil {
+		return nil, err
+	}
+
+	return &tokenStr, nil
+}
+
+func (s *Shopkeeper) GetById(id string) (*db.ShopkeeperModel, error) {
 	shopkeeper, err := s.client.Shopkeeper.FindUnique(
 		db.Shopkeeper.ID.Equals(id),
 	).With(
@@ -95,100 +104,33 @@ func (s *Shopkeeper) Get(id string) (*db.ShopkeeperModel, error) {
 	return shopkeeper, nil
 }
 
-func (s *Shopkeeper) Login(email string, password string) (string, error) {
-	shopkeeper, err := s.getByEmail(email)
-	if err != nil {
-		return "", errors.New("Email or Password incorrect")
-	}
-
-	if !CheckPasswordHash(password, shopkeeper.Password) {
-		return "", errors.New("Email or Password incorrect")
-	}
-
-	claims := &config.JwtCustomClaims{
-		Email: shopkeeper.Email,
-		ID:    shopkeeper.ID,
-		Type:  s.env.SHOPKEEPER_TYPE,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	t, err := token.SignedString([]byte(s.env.JWT_SECRET))
-
-	return t, nil
-}
-
-func (s *Shopkeeper) validate(shopkeeper *dtos.CreateShopkeeperDTO) error {
-	v := validator.New()
-	err := v.Struct(shopkeeper)
-
-	if err != nil {
-		return err
-	}
-
-	err = s.emailExists(shopkeeper.Email)
-	if err != nil {
-		return err
-	}
-	err = s.cnpjExists(shopkeeper.CNPJ)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shopkeeper) emailExists(email string) error {
-	_, err := s.client.Shopkeeper.FindUnique(db.Shopkeeper.Email.Equals(email)).Exec(s.ctx)
-	if err == nil {
-		return errors.New("The field 'Email' is already in use. Please use another email.")
-	}
-	return nil
-}
-
-func (s *Shopkeeper) validateShopkeeper(shopkeeper *dtos.CreateShopkeeperDTO) error {
-	v := validator.New()
-	err := v.Struct(shopkeeper)
-
-	if err != nil {
-		return err
-	}
-
-	err = s.emailExists(shopkeeper.Email)
-	if err != nil {
-		return err
-	}
-	err = s.cnpjExists(shopkeeper.CNPJ)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shopkeeper) cnpjExists(cpf string) error {
-	_, err := s.client.Shopkeeper.FindUnique(db.Shopkeeper.Cnpj.Equals(cpf)).Exec(s.ctx)
-	if err == nil {
-		return errors.New("The field 'CNPJ' is already in use. Please use another CNPJ.")
-	}
-	return nil
-}
-
-func (s *Shopkeeper) getByEmail(email string) (*db.ShopkeeperModel, error) {
-	shopkeeper, err := s.client.Shopkeeper.FindUnique(
-		db.Shopkeeper.Email.Equals(email),
-	).With(
-		db.Shopkeeper.Wallet.Fetch(),
-	).Exec(s.ctx)
-
+func (s *Shopkeeper) GetByCPF(cpf string) (*db.UserModel, error) {
+	shopkeeper, err := s.client.User.FindUnique(db.User.Cpf.Equals(cpf)).Exec(s.ctx)
 	if err != nil {
 		return nil, err
 	}
-
 	return shopkeeper, nil
+}
+
+func (s *Shopkeeper) GetByEmailWithWallet(email string) (*db.UserModel, error) {
+	shopkeeper, err := s.client.User.FindUnique(db.User.Email.Equals(email)).With(db.User.Wallet.Fetch()).Exec(s.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return shopkeeper, nil
+}
+
+func (s *Shopkeeper) GetByEmail(email string) (*db.UserModel, error) {
+	shopkeeper, err := s.client.User.FindUnique(db.User.Email.Equals(email)).Exec(s.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return shopkeeper, nil
+}
+
+func (s *Shopkeeper) CheckPasswordHash(password, hash string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err
 }
 
 func MakeShopkeeperService(client *db.PrismaClient) *Shopkeeper {

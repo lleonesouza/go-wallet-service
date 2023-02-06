@@ -2,14 +2,13 @@ package services
 
 import (
 	"context"
-	"errors"
 	"q2bank/config"
 	"q2bank/handlers/dtos"
 	"q2bank/prisma/db"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"gopkg.in/go-playground/validator.v9"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -19,32 +18,8 @@ type User struct {
 	env    *config.Envs
 }
 
-func (u *User) Filter(user *db.UserModel) *dtos.UserResponseDTO {
-	return &dtos.UserResponseDTO{
-		ID:       user.ID,
-		WalletID: user.WalletID,
-		Balance:  user.Wallet().Balance,
-		Name:     user.Name,
-		Lastname: user.Lastname,
-		CPF:      user.Cpf,
-		Email:    user.Email,
-		CreateAt: user.CreatedAt.String(),
-		UpdateAt: user.UpdatedAt.String(),
-	}
-}
-
-func (u *User) Create(_user *dtos.CreateUserDTO) (*db.UserModel, error) {
-	err := u.validate(_user)
-	if err != nil {
-		return nil, err
-	}
-
+func (u *User) Create(_user *dtos.CreateUserDTO, wallet *db.WalletModel) (*db.UserModel, error) {
 	passwordHash, err := HashPassword(_user.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	wallet, err := u.wallet.Create()
 	if err != nil {
 		return nil, err
 	}
@@ -76,13 +51,33 @@ func (u *User) Update(id string, _user *dtos.UpdateUserDTO) (*db.UserModel, erro
 	).Exec(u.ctx)
 
 	if err != nil {
-		return user, err
+		return nil, err
 	}
 
 	return user, nil
 }
 
-func (u *User) Get(id string) (*db.UserModel, error) {
+func (u *User) Login(user *db.UserModel) (*string, error) {
+	claims := &config.JwtCustomClaims{
+		Email: user.Email,
+		ID:    user.ID,
+		Type:  u.env.USER_TYPE,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenStr, err := token.SignedString([]byte(u.env.JWT_SECRET))
+	if err != nil {
+		return nil, err
+	}
+
+	return &tokenStr, nil
+}
+
+func (u *User) GetById(id string) (*db.UserModel, error) {
 	user, err := u.client.User.FindUnique(
 		db.User.ID.Equals(id),
 	).With(
@@ -96,49 +91,15 @@ func (u *User) Get(id string) (*db.UserModel, error) {
 	return user, nil
 }
 
-func (u *User) Login(email string, password string) (string, error) {
-	user, err := u.getByEmail(email)
+func (u *User) GetByCPF(cpf string) (*db.UserModel, error) {
+	user, err := u.client.User.FindUnique(db.User.Cpf.Equals(cpf)).Exec(u.ctx)
 	if err != nil {
-		return "", errors.New("Email or Password incorrect")
+		return nil, err
 	}
-
-	if !CheckPasswordHash(password, user.Password) {
-		return "", errors.New("Email or Password incorrect")
-	}
-
-	claims := &config.JwtCustomClaims{
-		Email: user.Email,
-		ID:    user.ID,
-		Type:  u.env.USER_TYPE,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	t, err := token.SignedString([]byte(u.env.JWT_SECRET))
-
-	return t, nil
+	return user, nil
 }
 
-func (u *User) emailExists(email string) error {
-	_, err := u.client.User.FindUnique(db.User.Email.Equals(email)).Exec(u.ctx)
-	if err == nil {
-		return errors.New("The field 'Email' is already in use. Please use another email.")
-	}
-	return nil
-}
-
-func (u *User) cpfExists(cpf string) error {
-	_, err := u.client.User.FindUnique(db.User.Cpf.Equals(cpf)).Exec(u.ctx)
-	if err == nil {
-		return errors.New("The field 'CPF' is already in use. Please use another CPF.")
-	}
-	return nil
-}
-
-func (u *User) getByEmail(email string) (*db.UserModel, error) {
+func (u *User) GetByEmailWithWallet(email string) (*db.UserModel, error) {
 	user, err := u.client.User.FindUnique(
 		db.User.Email.Equals(email),
 	).With(
@@ -152,24 +113,32 @@ func (u *User) getByEmail(email string) (*db.UserModel, error) {
 	return user, nil
 }
 
-func (u *User) validate(user *dtos.CreateUserDTO) error {
-	v := validator.New()
-	err := v.Struct(user)
-
+func (u *User) GetByEmail(email string) (*db.UserModel, error) {
+	user, err := u.client.User.FindUnique(db.User.Email.Equals(email)).Exec(u.ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = u.emailExists(user.Email)
-	if err != nil {
-		return err
-	}
-	err = u.cpfExists(user.CPF)
-	if err != nil {
-		return err
-	}
+	return user, nil
+}
 
-	return nil
+func (u *User) Filter(user *db.UserModel) *dtos.UserResponseDTO {
+	return &dtos.UserResponseDTO{
+		ID:       user.ID,
+		WalletID: user.WalletID,
+		Balance:  user.Wallet().Balance,
+		Name:     user.Name,
+		Lastname: user.Lastname,
+		CPF:      user.Cpf,
+		Email:    user.Email,
+		CreateAt: user.CreatedAt.String(),
+		UpdateAt: user.UpdatedAt.String(),
+	}
+}
+
+func (u *User) CheckPasswordHash(password, hash string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err
 }
 
 func MakeUserService(client *db.PrismaClient) *User {
