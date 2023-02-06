@@ -146,33 +146,39 @@ func (u *UserHandler) Update(c echo.Context) error {
 //	@Router			/user/login [post]
 func (u *UserHandler) Login(c echo.Context) error {
 	// Bind LoginUserDTO
-	_user := new(dtos.LoginUserDTO)
-	if err := c.Bind(_user); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, services.FormatError(err))
+	user := new(dtos.LoginUserDTO)
+	err := c.Bind(user)
+	if err != nil {
+		typeErr := u.errors.TypeError(err.Error())
+		return c.JSON(typeErr.Status, typeErr)
 	}
 
 	// Validate LoginUserDTO
-	err := u.validator.Struct(_user)
+	err = u.validator.Struct(user)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, services.FormatError(err))
+		bodyErr := u.errors.BodyError(err.Error())
+		return c.JSON(bodyErr.Status, bodyErr)
 	}
 
 	// Get User By Email
-	user, err := u.service.User.GetByEmail(_user.Email)
+	completeUser, err := u.service.User.GetByEmail(user.Email)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, services.FormatError(err))
+		conflictErr := u.errors.EmailRegistered(user.Email)
+		return c.JSON(conflictErr.Status, conflictErr)
 	}
 
 	// Compare Password
-	err = u.service.User.CheckPasswordHash(_user.Password, user.Password)
+	err = u.service.User.CheckPasswordHash(completeUser.Password, user.Password)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, services.FormatError(err))
+		unauthorizedErr := u.errors.UnauthorizedError()
+		return c.JSON(unauthorizedErr.Status, unauthorizedErr)
 	}
 
 	// Login
-	token, err := u.service.User.Login(user)
+	token, err := u.service.User.Login(completeUser)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, services.FormatError(err))
+		loginErr := u.errors.LoginError()
+		return c.JSON(loginErr.Status, loginErr)
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
