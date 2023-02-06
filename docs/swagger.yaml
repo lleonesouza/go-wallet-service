@@ -46,9 +46,13 @@ definitions:
         type: string
       lastname:
         example: doe
+        maxLength: 19
+        minLength: 3
         type: string
       name:
         example: john
+        maxLength: 15
+        minLength: 3
         type: string
       password:
         example: "12345678"
@@ -167,9 +171,13 @@ definitions:
     properties:
       lastname:
         example: doe
+        maxLength: 19
+        minLength: 3
         type: string
       name:
         example: john
+        maxLength: 15
+        minLength: 3
         type: string
     required:
     - lastname
