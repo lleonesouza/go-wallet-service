@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Q2BANK Challenge",
-        "title": "Q2Bank API",
+        "description": "bff-answerfy Challenge",
+        "title": "bff-answerfy API",
         "contact": {
             "name": "leone de souza",
             "url": "https://github.com/lleonesouza",

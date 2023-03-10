@@ -1,16 +1,17 @@
 package services
 
 import (
+	"bff-answerfy/config"
+	"bff-answerfy/prisma/db"
 	"context"
-	"q2bank/config"
-	"q2bank/prisma/db"
 )
 
 type Services struct {
 	User        *User
-	Shopkeeper  *Shopkeeper
 	Transaction *Transaction
 	Wallet      *Wallet
+	AI          *AI
+	Question    *Question
 }
 
 func MakeServices(env *config.Envs) *Services {
@@ -23,16 +24,17 @@ func MakeServices(env *config.Envs) *Services {
 
 	ctx := context.Background()
 
+	http := &Http{env: env}
 	wallet := &Wallet{client, ctx, env}
+	ai := &AI{
+		env:    env,
+		client: client,
+		http:   http,
+		ctx:    ctx,
+	}
 
 	return &Services{
 		User: &User{
-			client: client,
-			wallet: wallet,
-			ctx:    ctx,
-			env:    env,
-		},
-		Shopkeeper: &Shopkeeper{
 			client: client,
 			wallet: wallet,
 			ctx:    ctx,
@@ -44,5 +46,12 @@ func MakeServices(env *config.Envs) *Services {
 			env:    env,
 		},
 		Wallet: wallet,
+		AI:     ai,
+		Question: &Question{
+			client: client,
+			wallet: wallet,
+			ctx:    ctx,
+			env:    env,
+		},
 	}
 }

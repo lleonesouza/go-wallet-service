@@ -747,8 +747,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:1323",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Q2Bank API",
-	Description:      "Q2BANK Challenge",
+	Title:            "bff-answerfy API",
+	Description:      "bff-answerfy Challenge",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

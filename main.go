@@ -1,21 +1,21 @@
 package main
 
 import (
-	"q2bank/config"
-	"q2bank/handlers"
+	"bff-answerfy/config"
+	"bff-answerfy/handlers"
 
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 
-	_ "q2bank/docs"
+	_ "bff-answerfy/docs"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
-//	@title			Q2Bank API
+//	@title			bff-answerfy API
 //	@version		1.0
-//	@description	Q2BANK Challenge
+//	@description	bff-answerfy Challenge
 
 //	@contact.name	leone de souza
 //	@contact.url	https://github.com/lleonesouza
@@ -47,21 +47,17 @@ func main() {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	user := e.Group("/user")
-
 	user.POST("", h.User.Create)
 	user.POST("/login", h.User.Login)
 	user.GET("", h.User.Get, echojwt.WithConfig(config))
 	user.PUT("", h.User.Update, echojwt.WithConfig(config))
 
-	shopkeeper := e.Group("/shopkeeper")
-	shopkeeper.POST("", h.Shopkeeper.Create)
-	shopkeeper.POST("/login", h.Shopkeeper.Login)
-	shopkeeper.GET("", h.Shopkeeper.Get, echojwt.WithConfig(config))
-	shopkeeper.PUT("", h.Shopkeeper.Update, echojwt.WithConfig(config))
+	question := e.Group("/question")
+	question.POST("", h.Question.Create, echojwt.WithConfig(config))
+	question.GET("", h.Question.List, echojwt.WithConfig(config))
 
-	tx := e.Group("/transaction")
-	tx.POST("", h.Transaction.Create, echojwt.WithConfig(config))
-	tx.GET("", h.Transaction.List, echojwt.WithConfig(config))
+	wallet := e.Group("/wallet")
+	wallet.GET("", h.Wallet.Get, echojwt.WithConfig(config))
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

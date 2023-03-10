@@ -1,16 +1,16 @@
 package handlers
 
 import (
-	"q2bank/config"
-	"q2bank/errors"
-	"q2bank/handlers/validation"
-	"q2bank/services"
+	"bff-answerfy/config"
+	"bff-answerfy/errors"
+	"bff-answerfy/handlers/validation"
+	"bff-answerfy/services"
 )
 
 type Handlers struct {
-	Shopkeeper  ShopkeeperHandler
-	User        UserHandler
-	Transaction TransactionHandler
+	User     UserHandler
+	Wallet   WalletHandler
+	Question QuestionHandler
 }
 
 func MakeHandlers(env *config.Envs) *Handlers {
@@ -20,19 +20,19 @@ func MakeHandlers(env *config.Envs) *Handlers {
 	errors := errors.MakeErrors()
 
 	return &Handlers{
-		Shopkeeper: ShopkeeperHandler{
-			service:   services,
-			env:       env,
-			validator: validator,
-			errors:    errors,
-		},
 		User: UserHandler{
 			service:   services,
 			env:       env,
 			validator: validator,
 			errors:    errors,
 		},
-		Transaction: TransactionHandler{
+		Wallet: WalletHandler{
+			service:   services,
+			env:       env,
+			validator: validator,
+			errors:    errors,
+		},
+		Question: QuestionHandler{
 			service:   services,
 			env:       env,
 			validator: validator,

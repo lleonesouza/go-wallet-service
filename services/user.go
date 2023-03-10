@@ -1,10 +1,10 @@
 package services
 
 import (
+	"bff-answerfy/config"
+	"bff-answerfy/handlers/dtos"
+	"bff-answerfy/prisma/db"
 	"context"
-	"q2bank/config"
-	"q2bank/handlers/dtos"
-	"q2bank/prisma/db"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -27,7 +27,7 @@ func (u *User) Create(_user *dtos.CreateUserDTO, wallet *db.WalletModel) (*db.Us
 	user, err := u.client.User.CreateOne(
 		db.User.Email.Set(_user.Email),
 		db.User.Cpf.Set(_user.CPF),
-		db.User.Password.Set(passwordHash),
+		db.User.Password.Set(string(passwordHash)),
 		db.User.Name.Set(_user.Name),
 		db.User.Lastname.Set(_user.Lastname),
 		db.User.Wallet.Link(
@@ -139,10 +139,4 @@ func (u *User) Filter(user *db.UserModel) *dtos.UserResponseDTO {
 func (u *User) CheckPasswordHash(password, hash string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err
-}
-
-func MakeUserService(client *db.PrismaClient) *User {
-	return &User{
-		client: client,
-	}
 }

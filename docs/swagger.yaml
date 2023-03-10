@@ -219,11 +219,11 @@ info:
     email: lleonesouza@live.com
     name: leone de souza
     url: https://github.com/lleonesouza
-  description: Q2BANK Challenge
+  description: bff-answerfy Challenge
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Q2Bank API
+  title: bff-answerfy API
   version: "1.0"
 paths:
   /shopkeeper:

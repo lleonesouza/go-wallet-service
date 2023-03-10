@@ -11,45 +11,45 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  cpf        String   @unique
+  id         String     @id @default(uuid())
+  email      String     @unique
+  cpf        String     @unique
   password   String
   name       String
   lastname   String
+  Wallet     Wallet     @relation(fields: [walletId], references: [id])
+  walletId   String
+  Questions  Question[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+}
+
+model Wallet {
+  id           String        @id @default(uuid())
+  balance      Int
+  User         User[]
+  Transactions Transaction[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @default(now()) @updatedAt
+}
+
+model Transaction {
+  id         String   @id @default(uuid())
+  value      Int
+  type       String // add / remove 
   Wallet     Wallet   @relation(fields: [walletId], references: [id])
   walletId   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 
-model Shopkeeper {
+model Question {
   id         String   @id @default(uuid())
-  email      String   @unique
-  cnpj       String   @unique
-  password   String
-  name       String
-  lastname   String
-  Wallet     Wallet   @relation(fields: [walletId], references: [id])
-  walletId   String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
-}
-
-model Wallet {
-  id           String         @id @default(uuid())
-  balance      Int
-  User         User[]
-  Shopkeeper   Shopkeeper[]
-  Transactions Transactions[]
-  created_at   DateTime       @default(now())
-  updated_at   DateTime       @default(now()) @updatedAt
-}
-
-model Transactions {
-  id         String   @id @default(uuid())
-  value      Int
-  Wallets    Wallet[]
+  status     String // success / processing / failed
+  input      String
+  output     String?
+  User       User     @relation(fields: [userId], references: [id])
+  userId     String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }

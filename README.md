@@ -111,3 +111,12 @@ Contains env and configuration structs
 # Contribute
 
 Feel free to create a Pull Request, it will be welcome
+
+
+
+<!-- Resolva -> Prove Questions (- university question classify) -->
+<!--  -->
+<!-- Reescreva -> Article (- school article and redation) -->
+<!-- Reescreva no estilo -> (- ) -->
+<!--  -->
+<!-- Explique -> General Question -->

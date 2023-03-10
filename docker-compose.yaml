@@ -1,8 +1,8 @@
 version: "2.2"
 
 services:
-  q2bank:
-    container_name: q2bank
+  bff-answerfy:
+    container_name: bff-answerfy
     build:
       context: ./
       dockerfile: ./dockerfile.yaml
@@ -14,7 +14,9 @@ services:
       - APP_NODE=prod
       - PORT=1323
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-      - SECRET=secret
+      - JWT_SECRET=secret
+      - OPENAI_API_KEY=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
+      - OPENAI_URL=http://localhost:3000/chatgpt
     depends_on:
       - db
 

@@ -1,4 +1,4 @@
-module q2bank
+module bff-answerfy
 
 go 1.18
 
@@ -6,11 +6,13 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/joho/godotenv v1.4.0
+	github.com/klassmann/cpfcnpj v0.0.0-20200907140233-a595c5fd8de1
 	github.com/labstack/echo-jwt/v4 v4.1.0
 	github.com/labstack/echo/v4 v4.10.0
 	github.com/prisma/prisma-client-go v0.16.3
 	github.com/shopspring/decimal v1.3.1
 	github.com/swaggo/echo-swagger v1.3.5
+	github.com/swaggo/swag v1.8.10
 	github.com/takuoki/gocase v1.0.0
 	golang.org/x/crypto v0.5.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
@@ -32,7 +34,6 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klassmann/cpfcnpj v0.0.0-20200907140233-a595c5fd8de1 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -41,7 +42,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/swaggo/files v1.0.0 // indirect
-	github.com/swaggo/swag v1.8.10 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect

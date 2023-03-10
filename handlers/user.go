@@ -1,11 +1,11 @@
 package handlers
 
 import (
+	"bff-answerfy/config"
+	"bff-answerfy/errors"
+	"bff-answerfy/handlers/dtos"
+	"bff-answerfy/services"
 	"net/http"
-	"q2bank/config"
-	"q2bank/errors"
-	"q2bank/handlers/dtos"
-	"q2bank/services"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -168,7 +168,7 @@ func (u *UserHandler) Login(c echo.Context) error {
 	}
 
 	// Compare Password
-	err = u.service.User.CheckPasswordHash(completeUser.Password, user.Password)
+	err = u.service.User.CheckPasswordHash(user.Password, completeUser.Password)
 	if err != nil {
 		unauthorizedErr := u.errors.UnauthorizedError()
 		return c.JSON(unauthorizedErr.Status, unauthorizedErr)

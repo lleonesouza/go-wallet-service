@@ -8,12 +8,13 @@ import (
 )
 
 type Envs struct {
-	JWT_SECRET                 string
-	TRANSACTION_AUTHORIZER_URL string
-	APP_ENV                    string
-	WALLET_BALANCE_INIT        string
-	USER_TYPE                  string
-	SHOPKEEPER_TYPE            string
+	JWT_SECRET          string
+	OPENAI_URL          string
+	OPENAI_API_KEY      string
+	APP_ENV             string
+	WALLET_BALANCE_INIT string
+	USER_TYPE           string
+	SHOPKEEPER_TYPE     string
 }
 
 func MakeEnvs() *Envs {
@@ -23,12 +24,12 @@ func MakeEnvs() *Envs {
 	}
 
 	envs := &Envs{
-		JWT_SECRET:                 os.Getenv("JWT_SECRET"),
-		TRANSACTION_AUTHORIZER_URL: os.Getenv("TRANSACTION_VERIFY_URL"),
-		APP_ENV:                    os.Getenv("APP_ENV"),
-		WALLET_BALANCE_INIT:        os.Getenv("WALLET_BALANCE_INIT"),
-		USER_TYPE:                  "user",
-		SHOPKEEPER_TYPE:            "shopkeeper",
+		JWT_SECRET:          os.Getenv("JWT_SECRET"),
+		OPENAI_URL:          "https://api.openai.com/v1/engine/chat",
+		OPENAI_API_KEY:      os.Getenv("OPENAI_API_KEY"),
+		APP_ENV:             os.Getenv("APP_ENV"),
+		WALLET_BALANCE_INIT: os.Getenv("WALLET_BALANCE_INIT"),
+		USER_TYPE:           "user",
 	}
 
 	return envs
